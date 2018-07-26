@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
-
 	resty "gopkg.in/resty.v0"
 )
 
@@ -26,8 +24,6 @@ type nowplaying struct {
 
 func getNowPlaying(username string) (string, error) {
 	resp, _ := resty.R().Get("https://itframe.innovatete.ch/nowplaying/" + username)
-
-	spew.Dump(resp)
 
 	if resp.StatusCode() != http.StatusOK {
 		return "", errors.New("Not 200 ok")
