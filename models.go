@@ -29,6 +29,12 @@ func NewAudioStartResponse() AudioStartResponse {
 	out := AudioStartResponse{}
 
 	out.Version = "1.0"
+	out.Response = struct {
+		ShouldEndSession bool             `json:"shouldEndSession"`
+		Directives       []AudioDirective `json:"directives"`
+	}{
+		ShouldEndSession: true,
+	}
 
 	return out
 }
