@@ -26,7 +26,7 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, Alexa!")
 	})
-	e.GET("/alexa/:username", handleAlexa)
+	e.POST("/alexa/:username", handleAlexa)
 	e.Logger.Fatal(e.Start(":80"))
 }
 
