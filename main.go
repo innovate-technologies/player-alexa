@@ -12,6 +12,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha1"
 	"encoding/base64"
+	"encoding/json"
 	"io"
 
 	"github.com/labstack/echo"
@@ -35,7 +36,6 @@ func handleAlexa(c echo.Context) error {
 	c.Bind(&req)
 
 	resp := alexa.NewEchoResponse()
-
 	reqType := req.GetRequestType()
 
 	if reqType == "LaunchRequest" {
@@ -51,7 +51,7 @@ func handleAlexa(c echo.Context) error {
 	intent := req.GetIntentName()
 
 	if intent == "NowPlaying" {
-		return c.JSON(http.StatusOK, resp.OutputSpeech("I don't know... ask Google. Okay Google, what song is this"))
+		return c.JSON(http.StatusOK, resp.OutputSpeech("I have no idea which song is playing... ask Google. Okay Google, what song is this"))
 	}
 
 	if intent == "Play" || intent == "AMAZON.ResumeIntent" {
@@ -121,7 +121,16 @@ func verifySignature(next echo.HandlerFunc) echo.HandlerFunc {
 func verifyTimeStamp(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		body := alexa.EchoRequest{}
-		c.Bind(&body)
+
+		var bodyBytes []byte
+		if c.Request().Body != nil {
+			bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
+		}
+
+		// Restore the io.ReadCloser to its original state
+		c.Request().Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+
+		json.Unmarshal(bodyBytes, &body)
 
 		reqTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", body.Request.Timestamp)
 		if time.Since(reqTimestamp) < time.Duration(150)*time.Second {
