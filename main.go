@@ -42,7 +42,7 @@ func handleAlexa(c echo.Context) error {
 
 	if reqType == "LaunchRequest" {
 		// say hello to a new user
-		c.JSON(http.StatusOK, resp.OutputSpeech("Welcome to The super secret SHOUTca dot es tee player. Say Play to play some innovation!"))
+		c.JSON(http.StatusOK, resp.EndSession(false).OutputSpeech("Welcome to The super secret SHOUTca dot es tee player. Say Play to play some innovation or ask which song is playing"))
 	}
 
 	if reqType != "IntentRequest" {
