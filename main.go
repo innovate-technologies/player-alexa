@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -33,6 +34,7 @@ func main() {
 
 func handleAlexa(c echo.Context) error {
 	req := alexa.EchoRequest{}
+	user := c.Param("username")
 	c.Bind(&req)
 
 	resp := alexa.NewEchoResponse()
@@ -51,7 +53,11 @@ func handleAlexa(c echo.Context) error {
 	intent := req.GetIntentName()
 
 	if intent == "NowPlaying" {
-		return c.JSON(http.StatusOK, resp.OutputSpeech("I have no idea which song is playing... ask Google. Okay Google, what song is this"))
+		song, err := getNowPlaying(user)
+		if err != nil {
+			return c.JSON(http.StatusOK, resp.OutputSpeech("I'm sorry, I have no idea which song is playing right now"))
+		}
+		return c.JSON(http.StatusOK, resp.OutputSpeech(fmt.Sprintf("Currently, %s is playing", song)))
 	}
 
 	if intent == "Play" || intent == "AMAZON.ResumeIntent" {
