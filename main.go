@@ -90,6 +90,10 @@ func handleAlexa(c echo.Context) error {
 		return c.JSON(http.StatusOK, audioResonse)
 	}
 
+	if intent == "AMAZON.HelpIntent" || intent == "AMAZON.FallbackIntent" {
+		return c.JSON(http.StatusOK, resp.OutputSpeech("Hello, I am an Alexa skill that plays OPENcast, the SHOUTca dot es tee demo station. You can ask me to play the station or ask me questions like which song is playing. You can also ask me to stop playing music."))
+	}
+
 	// general fallback
 	return c.JSON(http.StatusOK, resp)
 }
