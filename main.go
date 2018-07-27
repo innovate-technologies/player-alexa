@@ -80,7 +80,7 @@ func handleAlexa(c echo.Context) error {
 		return c.JSON(http.StatusOK, audioResonse)
 	}
 
-	if intent == "AMAZON.PauseIntent" {
+	if intent == "AMAZON.PauseIntent" || intent == "AMAZON.StopIntent" || intent == "AMAZON.CancelIntent" {
 		audioResonse := NewAudioStartResponse()
 		audioResonse.Response.Directives = []AudioDirective{
 			AudioDirective{
