@@ -4,6 +4,7 @@ import (
 	"crypto"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 
@@ -29,20 +30,34 @@ func main() {
 		return c.String(http.StatusOK, "Hello, Alexa!")
 	})
 	e.POST("/alexa/:username", handleAlexa)
-	e.Logger.Fatal(e.Start(":80"))
+	e.Logger.Fatal(e.Start(":8080"))
 }
 
 func handleAlexa(c echo.Context) error {
 	req := alexa.EchoRequest{}
 	user := c.Param("username")
+	config, err := getConfigForUser(user)
+
+	if err != nil {
+		log.Println(err)
+		return c.String(http.StatusInternalServerError, "An error happened")
+	}
 	c.Bind(&req)
+
+	language := "en" // beta
+	var thisLanguageEntry languageEntry
+	for _, entry := range config.LanguageEntries {
+		if entry.Language == language {
+			thisLanguageEntry = entry
+		}
+	}
 
 	resp := alexa.NewEchoResponse()
 	reqType := req.GetRequestType()
 
 	if reqType == "LaunchRequest" {
 		// say hello to a new user
-		c.JSON(http.StatusOK, resp.EndSession(false).OutputSpeech("Welcome to The super secret SHOUTca dot es tee player. Say Play to play some innovation or ask which song is playing"))
+		c.JSON(http.StatusOK, resp.EndSession(false).OutputSpeech(thisLanguageEntry.Intro))
 	}
 
 	if reqType != "IntentRequest" {
@@ -68,7 +83,7 @@ func handleAlexa(c echo.Context) error {
 				PlayBehavior: "REPLACE_ALL",
 				AudioItem: AudoItem{
 					Stream: Stream{
-						URL:   "https://opencast.radioca.st/streams/320kbps",
+						URL:   config.TuneInURL,
 						Token: "0",
 						ExpectedPreviousToken: nil,
 						OffsetInMilliseconds:  0,
@@ -91,7 +106,7 @@ func handleAlexa(c echo.Context) error {
 	}
 
 	if intent == "AMAZON.HelpIntent" || intent == "AMAZON.FallbackIntent" {
-		return c.JSON(http.StatusOK, resp.OutputSpeech("Hello, I am an Alexa skill that plays OPENcast, the SHOUTca dot es tee demo station. You can ask me to play the station or ask me questions like which song is playing. You can also ask me to stop playing music."))
+		return c.JSON(http.StatusOK, resp.OutputSpeech(thisLanguageEntry.Help))
 	}
 
 	// general fallback
