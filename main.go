@@ -30,7 +30,7 @@ func main() {
 		return c.String(http.StatusOK, "Hello, Alexa!")
 	})
 	e.POST("/alexa/:username", handleAlexa)
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":80"))
 }
 
 func handleAlexa(c echo.Context) error {
