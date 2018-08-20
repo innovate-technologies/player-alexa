@@ -75,7 +75,7 @@ func handleAlexa(c echo.Context) error {
 		return c.JSON(http.StatusOK, resp.OutputSpeech(fmt.Sprintf("Currently, %s is playing", song)))
 	}
 
-	if intent == "Play" || intent == "AMAZON.ResumeIntent" {
+	if intent == "Play" || intent == "AMAZON.ResumeIntent" || intent == "AMAZON.NextIntent" || intent == "AMAZON.PreviousIntent" || intent == "AMAZON.RepeatIntent" || intent == "AMAZON.StartOverIntent" {
 		audioResonse := NewAudioStartResponse()
 		audioResonse.Response.Directives = []AudioDirective{
 			AudioDirective{
