@@ -62,14 +62,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4610278a0a50c1c3e75394faaf6daef3753ee8b3102494b7a0c7e3ef9fa35b16"
+  digest = "1:726966ce829d306d7e28da8f1386d2e37c60c5c2ac63b2e8544e678c90c81ed5"
   name = "github.com/mikeflynn/go-alexa"
   packages = [
     "skillserver",
     "skillserver/dialog",
   ]
   pruneopts = ""
-  revision = "ee5f23c4bb659287d3fddbaf1b76348d6347d221"
+  revision = "e9429f48d7b6b64a55a2254909a056bf2a8a91d1"
 
 [[projects]]
   digest = "1:b9e40449c82e4d149a786f2e4b1f687215d61dd38eddc382a4f7f21f8408a658"
